@@ -1,0 +1,7 @@
+#When sorting a large file, I would use quick sort
+#This is because the two common most efficient sorting methods are quick sort and merge sort (and heap sort, but I'm not yet as familiar with it)
+#The reason why quick sort is better than merge sort here is because merge sort has O(N) space complexity
+#So, if we were to have to sort a 20GB file, we would need 20GB of auxillary space, which is not ideal
+#Quick sort, on the other hand, has a higher worse case time, so it may on average be a bit slower than merge sort
+#However, it does not use large amounts of extra space, and still still very efficient
+#Thus, to sort a large file, I would use quick sort
