@@ -1,0 +1,118 @@
+import copy
+
+class box:
+    def __init__(self, h, w, d):
+        self.height = h
+        self.width = w
+        self.depth = d
+
+
+def stack_of_boxes(box_list):
+    height_tower = calc_height(box_list, "height")
+    width_tower = calc_height(box_list, "width")
+    depth_tower = calc_height(box_list, "depth")
+
+    return max(max(height_tower, width_tower), depth_tower)
+
+
+def calc_height(box_list, type):
+    measurement_list = copy.deepcopy(box_list)
+
+    high = len(measurement_list) - 1
+    quick_sort(measurement_list, 0, high, type)
+
+    tower_height = 0
+
+    if type == "height":
+        cur_min_1 = box_list[0].width
+        cur_min_2 = box_list[0].depth
+    elif type == "width":
+        cur_min_1 = box_list[0].height
+        cur_min_2 = box_list[0].depth
+    else:
+        cur_min_1 = box_list[0].height
+        cur_min_2 = box_list[0].width
+
+    for box in box_list:
+        if type == "height":
+            cur_measure_1 = box.width
+            cur_measure_2 = box.depth
+        elif type == "width":
+            cur_measure_1 = box.height
+            cur_measure_2 = box.depth
+        else:
+            cur_measure_1 = box.height
+            cur_measure_2 = box.width
+
+        if cur_measure_1 < cur_min_1 and cur_measure_2 < cur_min_2:
+            tower_height += box.height
+
+            cur_min_1 = cur_measure_1
+            cur_min_2 = cur_measure_2
+
+    return tower_height
+
+
+#method to sort in descending order based on box height, width, or depth
+def quick_sort(list, low, high, type):
+    #return after quick-sorting everything in the list
+    if high <= low:
+        return
+    
+    #save index of pivot after partition
+    pivot_idx = partition(list, low, high, type)
+
+    #do quick_sort before and after the pivot
+    quick_sort(list, low, pivot_idx - 1, type)
+    quick_sort(list, pivot_idx + 1, high, type)
+
+
+def partition(list, low, high, type):
+    #choose last element as pivot
+    if type == "height":
+        pivot = list[high].height
+    elif type == "width":
+        pivot = list[high].width
+    else:
+        pivot = list[high].depth
+    
+    i = low - 1 #initialize variable to traverse through insertion of the list
+
+    print("low: ", low)
+    print("high: ", high)
+    for j in range(low, high):
+        #determine which of height, width, depth is being measured
+        if type == "height":
+            measurement = list[j].height
+        elif type == "width":
+            measurement = list[j].width
+        else:
+            measurement = list[j].depth
+
+        #if element height greater than pivot, place left of pivot
+        if measurement >= pivot:
+            i += 1
+            temp = list[i]
+            list[i] = list[j]
+            list[j] = temp
+
+    #insert pivot after last element that is <= to itself
+    i += 1
+    temp = list[i]
+    list[i] = list[high]
+    list[high] = temp
+
+    return i #return index after pivot
+
+
+box_list = []
+
+box_list.append(box(1, 2, 3))
+box_list.append(box(4, 5, 6))
+box_list.append(box(2, 2, 4))
+box_list.append(box(5, 6, 5))
+box_list.append(box(1, 1, 1))
+
+print(stack_of_boxes(box_list))
+
+#for some reason low and high don't iterate which causes an infinite recursion. pls fix
